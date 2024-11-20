@@ -11,19 +11,19 @@ class Ship:
         self.image = pygame.Surface((50, 40), pygame.SRCALPHA)
 
         if number == 0:
-            pygame.draw.polygon(self.image, ORANGE, [(0, 40), (25, 0), (50, 40)])  #оранжевый
+            pygame.draw.polygon(self.image, ORANGE, [(0, 40), (25, 0), (50, 40)])  # оранжевый
             self.start = WIDTH * 0.2, HEIGHT * 0.2
             self.keysPlayer = [pygame.K_a, pygame.K_d, pygame.K_w, pygame.K_s, pygame.K_e]
-            self.srartAngle = 0
+            self.start_angle = 0
         elif number == 1:
-            pygame.draw.polygon(self.image, BLUE, [(0, 40), (25, 0), (50, 40)])  #синий
+            pygame.draw.polygon(self.image, BLUE, [(0, 40), (25, 0), (50, 40)])  # синий
             self.start = WIDTH * 0.8, HEIGHT * 0.8
-            self.rect = self.image.get_rect(center=(self.start))
+            self.rect = self.image.get_rect(center=self.start)
             self.keysPlayer = [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN, pygame.K_RCTRL]
-            #self.keysPlayer = [pygame.K_k, pygame.K_SEMICOLON, pygame.K_o, pygame.K_l, pygame.K_p]
-            self.srartAngle = 180
+            # self.keysPlayer = [pygame.K_k, pygame.K_SEMICOLON, pygame.K_o, pygame.K_l, pygame.K_p]
+            self.start_angle = 180
         else:
-            print(f'Ship unkor number{self.number}')
+            print(f'Ship unknown number{self.number}')
             exit(1)
 
         self.startHp = 3
@@ -32,8 +32,8 @@ class Ship:
         pygame.draw.circle(self.image, RED, (25, 8), 4)
         pygame.draw.line(self.image, RED, (10, 30), (40, 30), width=4)
         self.invincibleTime = 0.6
-        self.angle = self.srartAngle
-        self.rect = self.image.get_rect(center=(self.start))
+        self.angle = self.start_angle
+        self.rect = self.image.get_rect(center=self.start)
         self.speed = 5
         self.radius = 20
         # self.lives = 3
@@ -137,14 +137,14 @@ class Ship:
                 text_rect = death_text.get_rect(center=(WIDTH // 2, HEIGHT * 0.55))
                 screen.blit(death_text, text_rect)
             else:
-                print(f'Ship unkor number{self.number}')
+                print(f'Ship unknown number{self.number}')
                 exit(1)
 
     def reset(self):
         """Сбрасывает состояние корабля после смерти."""
         self.__hp = self.startHp  # Восстановление полного запаса ХП
-        self.rect = self.image.get_rect(center=(self.start))  # Возвращение на стартовую позицию
-        self.angle = self.srartAngle  # Сброс угла поворота
+        self.rect = self.image.get_rect(center=self.start)  # Возвращение на стартовую позицию
+        self.angle = self.start_angle  # Сброс угла поворота
         self.invincible_until = time.time() + self.invincibleTime  # Кратковременная неуязвимость
         self.is_reloading = False  # Сброс состояния перезарядки
         self.shots = self.startShots  # Полный боезапас

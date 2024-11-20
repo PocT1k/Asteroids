@@ -1,11 +1,9 @@
 import pygame
-import random
 import time
-import math
 from ship import Ship
-from asteroid import spawn_asteroid, update_asteroids, draw_asteroids, MAX_ASTEROIDS, asteroids
-from laser import update_lasers, draw_lasers, draw_hud, draw_end, checkCollisionShips, checkCollisionAsteroid
-from utils import WIDTH, HEIGHT, BLACK, FPS, clock, game_time
+from asteroid import spawn_asteroid, update_asteroids, draw_asteroids, asteroids
+from laser import update_lasers, draw_lasers, draw_hud, draw_end, check_collision_ships, check_collision_asteroid
+from utils import WIDTH, HEIGHT, BLACK, FPS, MAX_ASTEROIDS, clock, game_time
 
 
 pygame.init()
@@ -45,11 +43,10 @@ while running:
     update_lasers()
     if len(asteroids) < MAX_ASTEROIDS:
         spawn_asteroid()
-    update_asteroids(ship1)
-    update_asteroids(ship2)
-    checkCollisionAsteroid(ship1, asteroids, current_time)
-    checkCollisionAsteroid(ship2, asteroids, current_time)
-    checkCollisionShips(ship1, ship2, current_time)
+    update_asteroids()
+    check_collision_asteroid(ship1, asteroids, current_time)
+    check_collision_asteroid(ship2, asteroids, current_time)
+    check_collision_ships(ship1, ship2, current_time)
 
     # draw
     screen.fill(BLACK)
@@ -60,7 +57,7 @@ while running:
     draw_hud(screen, ship1, ship2, current_time, end_time)
 
     pygame.display.flip()
-pass # while game
+pass  # while game
 
 screen.fill(BLACK)
 draw_end(screen, ship1, ship2)
@@ -75,6 +72,6 @@ while running:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 running = False
-pass # while end
+pass  # while end
 
 pygame.quit()

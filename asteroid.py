@@ -1,7 +1,7 @@
 import random
 import pygame
 import math
-from utils import lasers, WIDTH, HEIGHT, GREY, asteroids, MAX_ASTEROIDS
+from utils import lasers, WIDTH, HEIGHT, GREY, asteroids
 
 
 def spawn_asteroid():
@@ -15,7 +15,8 @@ def spawn_asteroid():
     }
     asteroids.append(asteroid)
 
-def update_asteroids(ship):
+
+def update_asteroids():
     for asteroid in asteroids:
         asteroid['pos'][0] += asteroid['vel'][0]
         asteroid['pos'][1] += asteroid['vel'][1]
@@ -31,6 +32,7 @@ def update_asteroids(ship):
                 if asteroid['hp'] <= 0:
                     asteroids.remove(asteroid)  # Удаление астероида, если ХП <= 0
                 break  # Лазер может поразить только один астероид
+
 
 def draw_asteroids(screen):
     for asteroid in asteroids:
