@@ -7,7 +7,6 @@ from laser import shoot_laser
 
 class Ship:
     def __init__(self, number):
-
         self.number = number
         self.image = pygame.Surface((50, 40), pygame.SRCALPHA)
 
@@ -21,6 +20,7 @@ class Ship:
             self.start = WIDTH * 0.8, HEIGHT * 0.8
             self.rect = self.image.get_rect(center=(self.start))
             self.keysPlayer = [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN, pygame.K_RCTRL]
+            #self.keysPlayer = [pygame.K_k, pygame.K_SEMICOLON, pygame.K_o, pygame.K_l, pygame.K_p]
             self.srartAngle = 180
         else:
             print(f'Ship unkor number{self.number}')

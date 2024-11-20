@@ -34,6 +34,8 @@ while running:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 running = False
+            # else:
+            #     print(event.key)
     # keys
     keys = pygame.key.get_pressed()
     ship1.update(keys)
