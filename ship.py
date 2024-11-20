@@ -27,8 +27,10 @@ class Ship:
             exit(1)
 
         self.startHp = 3
-        self.startShots = 30
+        self.startShots = 10
 
+        pygame.draw.circle(self.image, RED, (25, 8), 4)
+        pygame.draw.line(self.image, RED, (10, 30), (40, 30), width=4)
         self.invincibleTime = 0.6
         self.angle = self.srartAngle
         self.rect = self.image.get_rect(center=(self.start))
@@ -73,7 +75,7 @@ class Ship:
         if self.is_reloading:
             if current_time - self.reload_start_time >= self.reload_time:
                 self.is_reloading = False
-                self.shots_left = 30
+                self.shots = self.startShots
 
     def take_damage(self):
         """Уменьшает ХП при получении урона."""
@@ -95,14 +97,14 @@ class Ship:
 
     def shoot_laser(self):
         current_time = time.time()
-        if self.shots_left > 0 and not self.is_reloading:
+        if self.shots > 0 and not self.is_reloading:
             # Стрельба из вершины треугольника
             tip_x = self.rect.centerx + self.radius * math.cos(math.radians(self.angle))
             tip_y = self.rect.centery - self.radius * math.sin(math.radians(self.angle))
             shoot_laser(tip_x, tip_y, self.angle, self.number)
             self.shots -= 1
             self.last_laser_time = current_time
-        elif self.shots_left <= 0 and not self.is_reloading:
+        elif self.shots <= 0 and not self.is_reloading:
             self.is_reloading = True
             self.reload_start_time = current_time
 

@@ -6,8 +6,9 @@ from utils import lasers, points, WIDTH, HEIGHT, WHITE
 
 def checkCollisionAsteroid(ship, asteroids, current_time):
     # Проверка на стрельбу
-    if pygame.key.get_pressed()[ship.keysPlayer[4]] and time.time() - ship.last_laser_time > ship.laser_cooldown:
-        ship.shoot_laser()
+    if not ship.is_respawning:
+        if pygame.key.get_pressed()[ship.keysPlayer[4]] and current_time - ship.last_laser_time > ship.laser_cooldown:
+            ship.shoot_laser()
 
     # Дальшге идёт расчёт домага. Если у корабля пока неуязвимость - выходим
     if current_time < ship.invincible_until:
