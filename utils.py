@@ -18,4 +18,6 @@ clock = pygame.time.Clock()
 # Глобальные переменные
 lasers = []
 asteroids = []
-MAX_ASTEROIDS = 8
+points = [0, 0]
+MAX_ASTEROIDS = 10
+game_time = 30

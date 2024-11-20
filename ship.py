@@ -1,8 +1,9 @@
 import pygame
 import math
 import time
-from utils import WIDTH, HEIGHT, ORANGE, BLUE, WHITE, RED
+from utils import points, WIDTH, HEIGHT, ORANGE, BLUE, WHITE, RED
 from laser import shoot_laser
+
 
 class Ship:
     def __init__(self, number):
@@ -14,22 +15,32 @@ class Ship:
             pygame.draw.polygon(self.image, ORANGE, [(0, 40), (25, 0), (50, 40)])  #оранжевый
             self.start = WIDTH * 0.2, HEIGHT * 0.2
             self.keysPlayer = [pygame.K_a, pygame.K_d, pygame.K_w, pygame.K_s, pygame.K_e]
+            self.srartAngle = 0
         elif number == 1:
             pygame.draw.polygon(self.image, BLUE, [(0, 40), (25, 0), (50, 40)])  #синий
             self.start = WIDTH * 0.8, HEIGHT * 0.8
             self.rect = self.image.get_rect(center=(self.start))
             self.keysPlayer = [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN, pygame.K_RCTRL]
-        self.rect = self.image.get_rect(center=(self.start))
+            self.srartAngle = 180
+        else:
+            print(f'Ship unkor number{self.number}')
+            exit(1)
 
-        self.angle = 0
+        self.startHp = 3
+        self.startShots = 30
+
+        self.invincibleTime = 0.6
+        self.angle = self.srartAngle
+        self.rect = self.image.get_rect(center=(self.start))
         self.speed = 5
+        self.radius = 20
         # self.lives = 3
-        self.hp = 3
-        self.invincible_until = time.time() + 1
+        self.__hp = self.startHp
+        self.invincible_until = time.time() + self.invincibleTime
         self.last_laser_time = 0
         self.laser_cooldown = 0.2
-        self.shots_left = 30  # Максимальное количество выстрелов
-        self.reload_time = 2  # Время перезарядки в секундах (2 секунды)
+        self.shots = self.startShots  # Максимальное количество выстрелов
+        self.reload_time = 1.5  # Время перезарядки в секундах (2 секунды)
         self.is_reloading = False
         self.reload_start_time = 0
         self.is_respawning = False
@@ -68,29 +79,32 @@ class Ship:
         """Уменьшает ХП при получении урона."""
         if self.is_respawning:
             return
+
         current_time = time.time()
         if current_time < self.invincible_until:
             return
 
-        self.hp -= 1
-        self.invincible_until = current_time + 1
+        self.__hp -= 1
+        self.invincible_until = current_time + self.invincibleTime
 
-        if self.hp <= 0:
+        if self.__hp <= 0:
+            points[(self.number + 1) % 2] += 1
             self.reset()
             self.is_respawning = True
             self.respawn_start_time = current_time
 
     def shoot_laser(self):
+        current_time = time.time()
         if self.shots_left > 0 and not self.is_reloading:
             # Стрельба из вершины треугольника
-            tip_x = self.rect.centerx + 25 * math.cos(math.radians(self.angle))
-            tip_y = self.rect.centery - 25 * math.sin(math.radians(self.angle))
+            tip_x = self.rect.centerx + self.radius * math.cos(math.radians(self.angle))
+            tip_y = self.rect.centery - self.radius * math.sin(math.radians(self.angle))
             shoot_laser(tip_x, tip_y, self.angle, self.number)
-            self.shots_left -= 1
-            self.last_laser_time = time.time()
+            self.shots -= 1
+            self.last_laser_time = current_time
         elif self.shots_left <= 0 and not self.is_reloading:
             self.is_reloading = True
-            self.reload_start_time = time.time()
+            self.reload_start_time = current_time
 
     def draw(self, screen):
         if not self.is_respawning:
@@ -104,25 +118,31 @@ class Ship:
                     screen.blit(rotated_image, new_rect.topleft)
 
             # Отображение оставшихся выстрелов
-            shots_text = pygame.font.Font(None, 24).render(f"Shots: {self.shots_left}", True, WHITE)
+            shots_text = pygame.font.Font(None, 24).render(f"Shots: {self.shots}", True, WHITE)
             screen.blit(shots_text, (self.rect.centerx - 15, self.rect.centery + 50))
 
             # Отображение ХП корабля
-            hp_text = pygame.font.Font(None, 24).render(f"HP: {self.hp}", True, WHITE)
+            hp_text = pygame.font.Font(None, 24).render(f"HP: {self.__hp}", True, WHITE)
             screen.blit(hp_text, (self.rect.centerx - 15, self.rect.centery + 70))
 
         else:
             # Отображение экрана смерти
             death_text = pygame.font.Font(None, 72).render(f"Игрок {self.number + 1} умер!", True, RED)
-            text_rect = death_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
-            screen.blit(death_text, text_rect)
-
+            if self.number == 0:
+                text_rect = death_text.get_rect(center=(WIDTH // 2, HEIGHT * 0.45))
+                screen.blit(death_text, text_rect)
+            elif self.number == 1:
+                text_rect = death_text.get_rect(center=(WIDTH // 2, HEIGHT * 0.55))
+                screen.blit(death_text, text_rect)
+            else:
+                print(f'Ship unkor number{self.number}')
+                exit(1)
 
     def reset(self):
         """Сбрасывает состояние корабля после смерти."""
-        self.hp = 3  # Восстановление полного запаса ХП
+        self.__hp = self.startHp  # Восстановление полного запаса ХП
         self.rect = self.image.get_rect(center=(self.start))  # Возвращение на стартовую позицию
-        self.angle = 0  # Сброс угла поворота
-        self.invincible_until = time.time() + 1  # Кратковременная неуязвимость
+        self.angle = self.srartAngle  # Сброс угла поворота
+        self.invincible_until = time.time() + self.invincibleTime  # Кратковременная неуязвимость
         self.is_reloading = False  # Сброс состояния перезарядки
-        self.shots_left = 30  # Полный боезапас
+        self.shots = self.startShots  # Полный боезапас
