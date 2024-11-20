@@ -59,6 +59,7 @@ while running:
     pygame.display.flip()
 pass  # while game
 
+
 screen.fill(BLACK)
 draw_end(screen, ship1, ship2)
 pygame.display.flip()
