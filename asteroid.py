@@ -1,18 +1,21 @@
 import random
 import pygame
 import math
-from utils import lasers, WIDTH, HEIGHT, GREY, asteroids
+from utils import lasers, asteroids, WIDTH, HEIGHT, GREY
 
 
 def spawn_asteroid():
-    size = random.randint(15, 40)
+    size = random.randint(20, 45)
     speed = max(1, 5 - size // 10)
+    random_number = random.choice(range(1, 64))
+    random_number -= 32
     asteroid = {
         'pos': [random.randint(0, WIDTH), random.randint(0, HEIGHT)],
         'vel': [random.choice([-speed, speed]), random.choice([-speed, speed])],
         'radius': size,
-        'hp': 1
+        'hp': 1,
         # 'hp': max(1, size // 20)
+        'color': [GREY[0] - random_number, GREY[1] - random_number, GREY[2] - random_number]
     }
     asteroids.append(asteroid)
 
@@ -37,23 +40,23 @@ def update_asteroids():
 
 
 def draw_asteroids(screen):
-    # pygame.draw.circle(screen, GREY, (-10, -10), 50)
     for asteroid in asteroids:
 
         radius = asteroid['radius']
         pos = asteroid['pos']
+        color = asteroid['color']
 
-        pygame.draw.circle(screen, GREY, pos, radius)  # реальное положение
+        pygame.draw.circle(screen, color, pos, radius)  # реальное положение
 
         # Дорисовка при выходе за экран
         if pos[0] < radius:  # Справа
-            pygame.draw.circle(screen, GREY, (pos[0] + WIDTH, pos[1]), radius)
+            pygame.draw.circle(screen, color, (pos[0] + WIDTH, pos[1]), radius)
         if WIDTH - pos[0] < radius:  # Слева
-            pygame.draw.circle(screen, GREY, (pos[0] - WIDTH, pos[1]), radius)
+            pygame.draw.circle(screen, color, (pos[0] - WIDTH, pos[1]), radius)
         if pos[1] < radius:  # Справа
-            pygame.draw.circle(screen, GREY, (pos[0], pos[1] + HEIGHT), radius)
+            pygame.draw.circle(screen, color, (pos[0], pos[1] + HEIGHT), radius)
         if HEIGHT - pos[1] < radius:  # Слева
-            pygame.draw.circle(screen, GREY, (pos[0], pos[1] - HEIGHT), radius)
+            pygame.draw.circle(screen, color, (pos[0], pos[1] - HEIGHT), radius)
 
         # Отображение ХП астероида
         # hp_text = pygame.font.Font(None, 24).render(str(asteroid['hp']), True, WHITE)
