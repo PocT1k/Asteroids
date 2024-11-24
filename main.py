@@ -12,8 +12,8 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Asteroids")
 
 # Создание корабля
-ship1 = Ship(0)
-ship2 = Ship(1)
+ship1 = Ship(screen, 0)
+ship2 = Ship(screen, 1)
 
 end_time = time.time() + game_time
 
@@ -51,8 +51,8 @@ while running:
     # draw
     screen.fill(BLACK)
     draw_asteroids(screen)
-    ship1.draw(screen)
-    ship2.draw(screen)
+    ship1.draw()
+    ship2.draw()
     draw_lasers(screen)
     draw_hud(screen, ship1, ship2, current_time, end_time)
 

@@ -6,8 +6,9 @@ from laser import shoot_laser
 
 
 class Ship:
-    def __init__(self, number):
+    def __init__(self, screen, number):
         self.number = number
+        self.screen = screen
         self.image = pygame.Surface((50, 40), pygame.SRCALPHA)
 
         if number == 0:
@@ -108,34 +109,34 @@ class Ship:
             self.is_reloading = True
             self.reload_start_time = current_time
 
-    def draw(self, screen):
+    def draw(self):
         if not self.is_respawning:
             rotated_image = pygame.transform.rotate(self.image, self.angle - 90)
             new_rect = rotated_image.get_rect(center=self.rect.center)
             current_time = time.time()
             if current_time > self.invincible_until:
-                screen.blit(rotated_image, new_rect.topleft)
+                self.screen.blit(rotated_image, new_rect.topleft)
             else:
                 if int(current_time * 10) % 2 == 0:
-                    screen.blit(rotated_image, new_rect.topleft)
+                    self.screen.blit(rotated_image, new_rect.topleft)
 
             # Отображение оставшихся выстрелов
             shots_text = pygame.font.Font(None, 24).render(f"Shots: {self.shots}", True, WHITE)
-            screen.blit(shots_text, (self.rect.centerx - 15, self.rect.centery + 50))
+            self.screen.blit(shots_text, (self.rect.centerx - 15, self.rect.centery + 50))
 
             # Отображение ХП корабля
             hp_text = pygame.font.Font(None, 24).render(f"HP: {self.__hp}", True, WHITE)
-            screen.blit(hp_text, (self.rect.centerx - 15, self.rect.centery + 70))
+            self.screen.blit(hp_text, (self.rect.centerx - 15, self.rect.centery + 70))
 
         else:
             # Отображение экрана смерти
             death_text = pygame.font.Font(None, 72).render(f"Игрок {self.number + 1} умер!", True, RED)
             if self.number == 0:
                 text_rect = death_text.get_rect(center=(WIDTH // 2, HEIGHT * 0.45))
-                screen.blit(death_text, text_rect)
+                self.screen.blit(death_text, text_rect)
             elif self.number == 1:
                 text_rect = death_text.get_rect(center=(WIDTH // 2, HEIGHT * 0.55))
-                screen.blit(death_text, text_rect)
+                self.screen.blit(death_text, text_rect)
             else:
                 print(f'Ship unknown number{self.number}')
                 exit(1)
